@@ -4,8 +4,13 @@ const btnAgregar = document.getElementById("btnAgregar");
 const alertValidacionesTexto = document.getElementById("alertValidacionesTexto");
 const alertValidaciones = document.getElementById("alertValidaciones");
 const cuerpoTabla = document.getElementById("tablaListaCompras").getElementsByTagName("tbody").item(0);
+const contadorProductos = document.getElementById("contadorProductos");
+const productosTotal = document.getElementById("productosTotal");
+const precioTotal = document.getElementById("precioTotal");
 //Numeración de la primera columna de la tabla
 let cont = 0;
+let costoTotal = 0;
+let totalEnProductos = 0;
 
 alertValidaciones.style.height="4rem";
 alertValidacionesTexto.style.textAlign="center";
@@ -62,18 +67,27 @@ btnAgregar.addEventListener("click",function(event){
 
     if(isValid){
         cont ++;
+        let precio = getPrecio();
         cuerpoTabla.insertAdjacentHTML("beforeend",
             `<tr>
                 <td>${cont}</td>
                 <td>${txtName.value}</td>
                 <td>${txtNumber.value}</td>
-                <td>${getPrecio()}</td>
+                <td>${precio}</td>
             </tr>`
         );
+        contadorProductos.innerText = cont;
+        costoTotal += precio * Number(txtNumber.value);
+        precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
+
+        totalEnProductos += Number(txtNumber.value);
+        productosTotal.innerText = totalEnProductos;
+
         txtName.value = '';
         txtNumber.value = '';
         txtName.focus();//Selecciona el campo focus por defecto
-    }
+        
+    };//IsValid
 
 
 });//btnAgregar
