@@ -11,6 +11,7 @@ const precioTotal = document.getElementById("precioTotal");
 let cont = 0;
 let costoTotal = 0;
 let totalEnProductos = 0;
+let datos = new Array();// [] Almacena elementos de la tabla
 
 alertValidaciones.style.height="4rem";
 alertValidacionesTexto.style.textAlign="center";
@@ -68,26 +69,63 @@ btnAgregar.addEventListener("click",function(event){
     if(isValid){
         cont ++;
         let precio = getPrecio();
-        cuerpoTabla.insertAdjacentHTML("beforeend",
-            `<tr>
-                <td>${cont}</td>
-                <td>${txtName.value}</td>
-                <td>${txtNumber.value}</td>
-                <td>${precio}</td>
-            </tr>`
-        );
+        let producto = {
+                        "cont":cont,
+                        "nombre":txtName.value,
+                        "cantidad":txtNumber.value,
+                        "precio":precio
+                        };
+                        
+        insetarElementoTabla(producto);
+
+        datos.push(producto);
+        localStorage.setItem("datos",JSON.stringify(datos));//Almacena la lista de productos
+        
         contadorProductos.innerText = cont;
         costoTotal += precio * Number(txtNumber.value);
         precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
-
         totalEnProductos += Number(txtNumber.value);
         productosTotal.innerText = totalEnProductos;
+
+        let resumen = {
+            "cont":cont,
+            "totalEnProductos": totalEnProductos,
+            "costoTotal": costoTotal
+        }
+        localStorage.setItem("resumen",JSON.stringify(resumen));// almacena el resumen de compra
 
         txtName.value = '';
         txtNumber.value = '';
         txtName.focus();//Selecciona el campo focus por defecto
-        
     };//IsValid
 
 
 });//btnAgregar
+
+window.addEventListener("load",function(event){
+    event.preventDefault();
+    datos =  JSON.parse(this.localStorage.getItem("datos"))||[];
+    datos.forEach(insetarElementoTabla);
+
+    let resumen = JSON.parse(this.localStorage.getItem("resumen"))||{"costoTotal":0,"totalEnProductos":0,"cont":0};
+    
+    cont = resumen.cont;
+    costoTotal = resumen.costoTotal;
+    totalEnProductos = resumen.totalEnProductos;
+
+    contadorProductos.innerText = cont;
+    precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
+    productosTotal.innerText = totalEnProductos;
+
+});//window.addEventListener
+
+function insetarElementoTabla(producto){
+    cuerpoTabla.insertAdjacentHTML("beforeend",
+        `<tr>
+            <td>${producto.cont}</td>
+            <td>${producto.nombre}</td>
+            <td>${producto.cantidad}</td>
+            <td>${producto.precio}</td>
+        </tr>`
+    )
+};//InsertarElementoTabla
