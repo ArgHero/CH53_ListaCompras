@@ -7,6 +7,7 @@ const cuerpoTabla = document.getElementById("tablaListaCompras").getElementsByTa
 const contadorProductos = document.getElementById("contadorProductos");
 const productosTotal = document.getElementById("productosTotal");
 const precioTotal = document.getElementById("precioTotal");
+const btnClear = document.getElementById("btnClear");
 //Numeración de la primera columna de la tabla
 let cont = 0;
 let costoTotal = 0;
@@ -127,5 +128,38 @@ function insetarElementoTabla(producto){
             <td>${producto.cantidad}</td>
             <td>${producto.precio}</td>
         </tr>`
-    )
+    );
 };//InsertarElementoTabla
+/*
+Agregar la funcionalidad del botón "Limpiar Todo"
+- Resumen
+- Tabla
+- Campos
+- Alerta
+*/
+btnClear.addEventListener("click",function(event){
+    event.preventDefault();
+    //variables
+    cont = 0;
+    costoTotal = 0;
+    totalEnProductos = 0;
+    //localstorage
+    localStorage.removeItem("datos");
+    localStorage.removeItem("resumen");
+    //Cuerpo de la lista
+    cuerpoTabla.innerHTML="";
+    //Resumn de la compra
+    contadorProductos.innerText = cont;
+    precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
+    productosTotal.innerText = totalEnProductos;
+    //Alerta
+    txtName.style.border="";
+    txtNumber.style.border="";
+    alertValidacionesTexto.innerHTML="";
+    alertValidaciones.style.display="none";
+    //Campos
+    txtName.value = '';
+    txtNumber.value = '';
+    //Selecciona el campo focus por defecto
+    txtName.focus();
+});//btnClear
